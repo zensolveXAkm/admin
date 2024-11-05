@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { db } from '../firebaseConfig'; // Import Firestore
+import { db, storage } from '../firebaseConfig'; // Import Firestore and Storage
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const categories = [
   'IT & Software',
@@ -23,26 +24,26 @@ const AdminPanel = () => {
   const [salaryFrom, setSalaryFrom] = useState('');
   const [salaryTo, setSalaryTo] = useState('');
   const [location, setLocation] = useState('');
-  const [companyLogo, setCompanyLogo] = useState('');
-  const [category, setCategory] = useState(''); // New state for category
+  const [companyLogo, setCompanyLogo] = useState(null); // Store file, not URL
+  const [category, setCategory] = useState('');
 
   // Fetch jobs, users, and applications
   const fetchJobs = async () => {
-    const jobsCollection = collection(db, 'jobs'); // Ensure you have a 'jobs' collection in Firestore
+    const jobsCollection = collection(db, 'jobs');
     const jobsSnapshot = await getDocs(jobsCollection);
     const jobsList = jobsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setJobs(jobsList);
   };
 
   const fetchUsers = async () => {
-    const usersCollection = collection(db, 'users'); // Your users collection
+    const usersCollection = collection(db, 'users');
     const userSnapshot = await getDocs(usersCollection);
     const userList = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setUsers(userList);
   };
 
   const fetchApplications = async () => {
-    const applicationsCollection = collection(db, 'jobApplications'); // Your job applications collection
+    const applicationsCollection = collection(db, 'jobApplications');
     const applicationSnapshot = await getDocs(applicationsCollection);
     const applicationList = applicationSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setApplications(applicationList);
@@ -56,6 +57,15 @@ const AdminPanel = () => {
 
   const handleAddJob = async (e) => {
     e.preventDefault();
+
+    // Upload logo to Firebase Storage if a file is selected
+    let logoURL = '';
+    if (companyLogo) {
+      const logoRef = ref(storage, `companyLogos/${companyLogo.name}`);
+      await uploadBytes(logoRef, companyLogo);
+      logoURL = await getDownloadURL(logoRef);
+    }
+
     const jobData = {
       companyName,
       position,
@@ -63,22 +73,22 @@ const AdminPanel = () => {
       salaryFrom,
       salaryTo,
       location,
-      companyLogo,
-      category, // Include category in the job data
+      companyLogo: logoURL, // Store the URL after uploading
+      category,
     };
 
     try {
       await addDoc(collection(db, 'jobs'), jobData);
-      fetchJobs(); // Refresh the job list
-      // Reset form fields including category
+      fetchJobs();
+      // Reset form fields including the file input
       setCompanyName('');
       setPosition('');
       setVacancies(0);
       setSalaryFrom('');
       setSalaryTo('');
       setLocation('');
-      setCompanyLogo('');
-      setCategory(''); // Reset category
+      setCompanyLogo(null); // Reset file
+      setCategory('');
     } catch (error) {
       console.error("Error adding job: ", error);
     }
@@ -87,7 +97,7 @@ const AdminPanel = () => {
   const handleDeleteJob = async (jobId) => {
     try {
       await deleteDoc(doc(db, 'jobs', jobId));
-      fetchJobs(); // Refresh the job list
+      fetchJobs();
     } catch (error) {
       console.error("Error deleting job: ", error);
     }
@@ -96,7 +106,7 @@ const AdminPanel = () => {
   const handleDeleteUser = async (userId) => {
     try {
       await deleteDoc(doc(db, 'users', userId));
-      fetchUsers(); // Refresh the user list
+      fetchUsers();
     } catch (error) {
       console.error("Error deleting user: ", error);
     }
@@ -158,10 +168,8 @@ const AdminPanel = () => {
           required
         />
         <input
-          type="text"
-          placeholder="Company Logo URL"
-          value={companyLogo}
-          onChange={(e) => setCompanyLogo(e.target.value)}
+          type="file"
+          onChange={(e) => setCompanyLogo(e.target.files[0])}
           className="border p-2 mb-2 w-full"
         />
         <select
