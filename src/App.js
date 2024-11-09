@@ -7,6 +7,7 @@ import AdminPanel from './components/AdminPanel';
 import SSUpload from './components/SSUpload';
 import LogoUpload from './components/LogoUpload';
 import EditData from './components/EditData';
+import EditReviews from './components/EditReviews';
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path='/ss' element={ <SSUpload/> } />
         <Route path='/logo' element={<LogoUpload/>} />
         <Route path='/ed-ftr' element={<EditData/>} />
+        <Route path='ed-rvw' element={<EditReviews/>}/>
 
 
       </Routes>

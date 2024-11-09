@@ -54,6 +54,7 @@ const Navbar = () => {
               
               {/* Dropdown for Services */}
               <li className="hover:text-gray-300"><Link to="/ed-ftr">Edit Footer Data</Link></li>
+              <li className="hover:text-gray-300"><Link to="/ed-rvw">Reviews</Link></li>
 
               <li className="hover:text-gray-300"><Link to="/logo">Logo Upload</Link></li>
             </>
