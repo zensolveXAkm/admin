@@ -53,8 +53,9 @@ const Navbar = () => {
               <li className="hover:text-gray-300"><Link to="/ss">Slideshow</Link></li>
               
               {/* Dropdown for Services */}
-              
-              <li className="hover:text-gray-300"><Link to="/logo">LogoUpload</Link></li>
+              <li className="hover:text-gray-300"><Link to="/ed-ftr">Edit Footer Data</Link></li>
+
+              <li className="hover:text-gray-300"><Link to="/logo">Logo Upload</Link></li>
             </>
           )}
         </ul>

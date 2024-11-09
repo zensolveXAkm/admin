@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { db } from '../firebaseConfig'; // Adjust to your Firestore instance
-import { storage } from '../firebaseConfig'; // Import your Firebase Storage
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage'; // Use uploadBytesResumable for progress tracking
-import { addDoc, collection } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { db, storage } from '../firebaseConfig';
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 const SSUpload = () => {
   const [title, setTitle] = useState('');
@@ -10,7 +9,21 @@ const SSUpload = () => {
   const [image, setImage] = useState(null);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
-  const [uploadProgress, setUploadProgress] = useState(0); // State for upload progress
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [images, setImages] = useState([]);
+
+  // Fetch uploaded images from Firestore
+  useEffect(() => {
+    const fetchImages = async () => {
+      const imagesCollection = await getDocs(collection(db, 'images'));
+      const imagesData = imagesCollection.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setImages(imagesData);
+    };
+    fetchImages();
+  }, []);
 
   const handleImageUpload = async (e) => {
     e.preventDefault();
@@ -27,45 +40,56 @@ const SSUpload = () => {
     }
 
     try {
-      // Create a storage reference
       const imageRef = ref(storage, `images/${image.name}`);
-      // Create a reference to the file
       const uploadTask = uploadBytesResumable(imageRef, image);
 
-      // Monitor the upload progress
       uploadTask.on(
         'state_changed',
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setUploadProgress(progress); // Update progress state
+          setUploadProgress(progress);
         },
         (error) => {
           console.error('Upload Error:', error);
           setError(error.message);
         },
         async () => {
-          // Get the download URL after successful upload
           const imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
 
-          // Add the image details to Firestore
-          await addDoc(collection(db, 'images'), {
+          const docRef = await addDoc(collection(db, 'images'), {
             title,
             description,
             imageUrl,
             createdAt: new Date(),
           });
 
+          setImages([...images, { id: docRef.id, title, description, imageUrl }]);
           setSuccessMessage('Image uploaded successfully!');
           setTitle('');
           setDescription('');
           setImage(null);
           setError(null);
-          setUploadProgress(0); // Reset progress after upload
+          setUploadProgress(0);
         }
       );
     } catch (err) {
-      console.error('Upload Error:', err); // Log the error for debugging
+      console.error('Upload Error:', err);
       setError(err.message);
+    }
+  };
+
+  const handleDeleteImage = async (id, imageUrl) => {
+    try {
+      await deleteDoc(doc(db, 'images', id));
+
+      const imageRef = ref(storage, imageUrl);
+      await deleteObject(imageRef);
+
+      setImages(images.filter((img) => img.id !== id));
+      setSuccessMessage('Image deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      setError('Failed to delete image: ' + error.message);
     }
   };
 
@@ -90,10 +114,7 @@ const SSUpload = () => {
         />
         <input
           type="file"
-          onChange={(e) => {
-            console.log(e.target.files[0]); // Log the selected file
-            setImage(e.target.files[0]);
-          }}
+          onChange={(e) => setImage(e.target.files[0])}
           className="border p-2 mb-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           accept="image/*"
           required
@@ -101,7 +122,6 @@ const SSUpload = () => {
         {error && <p className="text-red-500">{error}</p>}
         {successMessage && <p className="text-green-500">{successMessage}</p>}
 
-        {/* Progress Bar */}
         {uploadProgress > 0 && (
           <div className="mt-4">
             <div className="relative pt-1">
@@ -127,8 +147,26 @@ const SSUpload = () => {
           </div>
         )}
 
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded w-full">Upload Image</button>
+        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded w-full">
+          Upload Image
+        </button>
       </form>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        {images.map((img) => (
+          <div key={img.id} className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center">
+            <img src={img.imageUrl} alt={img.title} className="w-full h-32 object-contain mb-4" />
+            <h3 className="text-lg font-semibold">{img.title}</h3>
+            <p className="text-gray-600">{img.description}</p>
+            <button
+              onClick={() => handleDeleteImage(img.id, img.imageUrl)}
+              className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

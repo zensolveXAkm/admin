@@ -1,0 +1,65 @@
+/* EditData.css */
+.edit-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .edit-title {
+    font-size: 1.875rem; /* equivalent to text-3xl */
+    font-weight: 700;
+    color: #1d4ed8; /* blue-700 */
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .form-label {
+    display: block;
+    font-weight: 500;
+    color: #374151; /* gray-700 */
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db; /* gray-300 */
+    border-radius: 0.375rem;
+    outline: none;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .form-input:focus {
+    border-color: #2563eb; /* blue-500 */
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3); /* blue-500 at 30% opacity */
+  }
+  
+  .submit-button {
+    width: 100%;
+    background-color: #1d4ed8; /* blue-700 */
+    color: #ffffff;
+    font-weight: 600;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border: none;
+    outline: none;
+  }
+  
+  .submit-button:hover {
+    background-color: #1e40af; /* darker shade of blue-700 */
+  }
+  
+  .submit-button:focus {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.3); /* blue-500 at 30% opacity */
+  }
+  
