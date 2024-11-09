@@ -1,0 +1,128 @@
+/* AdminPanel.css */
+/* AdminPanel.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.shadow-lg-card {
+  @apply shadow-lg transition-all duration-300 transform hover:scale-105;
+}
+
+.bg-gradient-hover {
+  background: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+  transition: 0.5s;
+}
+
+.bg-gradient-hover:hover {
+  background: linear-gradient(120deg, #65fdf0 0%, #1d6fa3 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.button-glow:hover {
+  box-shadow: 0 0 10px #ff7e5f, 0 0 20px #feb47b;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: #333;
+  }
+  
+  .heading {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #7b4397, #dc2430);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: colorShift 6s ease-in-out infinite;
+  }
+  
+  @keyframes colorShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  .form-container {
+    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .form-container:hover {
+    transform: scale(1.05);
+  }
+  
+  .input-field,
+  .select-field {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid #e1e4e8;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-field:focus,
+  .select-field:focus {
+    border-color: #5b9bd5;
+    outline: none;
+  }
+  
+  .submit-button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .submit-button:hover {
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+  }
+  
+  .list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #ffffff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .list-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .delete-icon {
+    color: #e74c3c;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .delete-icon:hover {
+    color: #c0392b;
+  }
+  
