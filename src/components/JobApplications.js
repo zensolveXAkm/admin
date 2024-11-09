@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Function to generate the Gmail link for the email client
+// Function to generate the Gmail link for the acceptance email
 const generateGmailLink = (applicant) => {
   const { applicantName, applicantEmail, jobPosition, companyName } = applicant;
   const subject = `Application Accepted - ${jobPosition} at ${companyName}`;
@@ -19,7 +19,15 @@ const generateGmailLink = (applicant) => {
     
     Best regards,
     The Recruitment Team
-  `.trim(); // Removing any extra spaces or newlines
+    ZenSolve Infotech Solution
+
+    Contact Information:
+    - Address: 2nd floor, Bhagalpur Road, Godda, Near Railway Station
+    - Email: support@infozensolve.in
+    - Call us: 02269622941
+
+    Copyright © 2024 by ZenSolve Infotech Solution Private Limited. All Rights Reserved.
+  `.trim();
   
   // Creating the Gmail link
   const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(applicantEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
@@ -27,7 +35,38 @@ const generateGmailLink = (applicant) => {
   return gmailLink;
 };
 
-const JobApplications = ({ applications, onReject }) => {
+
+// Function to generate the Gmail link for the rejection email
+const generateRejectGmailLink = (applicant) => {
+  const { applicantName, applicantEmail, jobPosition, companyName } = applicant;
+  const subject = `Application Status - ${jobPosition} at ${companyName}`;
+  const body = `
+    Dear ${applicantName},
+    
+    Thank you for your interest in the ${jobPosition} position at ${companyName}.
+    
+    We have reviewed your application carefully, but unfortunately, we will not be moving forward with your application at this time. We encourage you to apply again in the future if a suitable opportunity arises.
+    
+    Best of luck with your job search and future career endeavors.
+
+    Sincerely,
+    The Recruitment Team
+    ZenSolve Infotech Solution
+
+    Contact Information:
+    - Address: 2nd floor, Bhagalpur Road, Godda, Near Railway Station
+    - Email: support@infozensolve.in
+    - Call us: 02269622941
+
+    Copyright © 2024 by ZenSolve Infotech Solution Private Limited. All Rights Reserved.
+  `.trim();
+  
+  const gmailLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(applicantEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+  return gmailLink;
+};
+
+const JobApplications = ({ applications }) => {
   return (
     <div>
       <h2 className="text-2xl font-bold mt-12 mb-6 text-center">Job Applications</h2>
@@ -52,11 +91,13 @@ const JobApplications = ({ applications, onReject }) => {
                 className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors duration-200">
                 Accept
               </a>
-              <button 
-                onClick={() => onReject(app.id)} 
+              <a 
+                href={generateRejectGmailLink(app)} 
+                target="_blank" 
+                rel="noopener noreferrer" 
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200">
                 Reject
-              </button>
+              </a>
             </div>
           </li>
         ))}
