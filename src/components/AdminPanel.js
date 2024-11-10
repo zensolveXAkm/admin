@@ -7,6 +7,7 @@ import {
   PieChart, Pie, Cell, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer,
 } from 'recharts';
 import JobApplications from './JobApplications'; // Import JobApplications component
+import PleaseHelp from './pleasehelp';
 
 const categories = [
   'IT & Software',
@@ -300,6 +301,7 @@ const AdminPanel = () => {
         onAccept={handleAccept} 
         onReject={handleReject} 
       />
+      <PleaseHelp/>
     </div>
   );
 };
